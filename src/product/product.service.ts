@@ -46,8 +46,25 @@ export class ProductService {
     }
   }
 
-  findAll() {
-    return this.productModel.find().populate("category");
+  async findAll(category, search) {
+    const filter: any = { }
+
+    // if the user filtering the products by category name in query
+    if (category) {
+      const categories = await this.categoryService.getByName(category);
+      filter.category = categories[0]?._id;
+    }
+
+    // if the user filters the product by search name
+    if (search) {
+      filter.name = {
+        $regex: search,
+        $options: 'i'
+      }
+    }
+    return this.productModel
+      .find( filter )
+      .populate('category');
   }
 
   findOne(id: number) {

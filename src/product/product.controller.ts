@@ -1,8 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } from '@nestjs/common';
+import { CategoryService } from './../category/category.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  Query,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import {  Serialize } from 'src/interceptors/serialise.interceptor';
+import { Serialize } from 'src/interceptors/serialise.interceptor';
 import { getProductDto } from './dto/get-product.dto';
 
 @Controller('product')
@@ -16,8 +27,11 @@ export class ProductController {
 
   @UseInterceptors(new Serialize(getProductDto))
   @Get()
-  findAll() {
-    return this.productService.findAll().populate("category");
+  findAll(
+    @Query('category') category: string,
+    @Query('search') search: string,
+  ) {
+    return this.productService.findAll(category, search);
   }
 
   @Get(':id')
