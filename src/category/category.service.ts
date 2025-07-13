@@ -35,7 +35,7 @@ export class CategoryService {
 
   // if you need single category to fetch
   async getById(id: string) {
-    try  {
+    try {
       const category = await this.categoryModel.findById(id);
       if (!category) {
         throw new NotFoundException('No category found with the given ID.');
@@ -43,18 +43,19 @@ export class CategoryService {
 
       return { category };
     } catch (error) {
-      throw error; 
+      throw error;
     }
   }
 
   // for handling POST request of the categories
   async create(category: createCategoryDto) {
     try {
-      const existing = await this.categoryModel.find({
-        name: category.name,
+      const { name } = category;
+      const existingCategory = await this.categoryModel.findOne({
+        name,
       });
-      if (existing) {
-        throw new ConflictException('Allready this category exists.');
+      if (existingCategory?.name) { // if we have an allready existing category with the same name
+        throw new ConflictException('We allready have this category');
       }
       const item = new this.categoryModel(category);
 
@@ -86,9 +87,10 @@ export class CategoryService {
     }
   }
 
-  // for deleting
+  // for deleting categories
   async deleteCategory(id: string) {
     try {
+      // TODO: first we need to find if there is any product associated with this category, if so we will return an error that you can not delete any category that is associated with one or multiple products
       return await this.categoryModel.findByIdAndDelete(id);
     } catch (error) {
       throw error;
