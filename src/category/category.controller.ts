@@ -32,6 +32,7 @@ export class CategoryController {
     return this.categoryService.getById(param.id as string);
   }
 
+  // for creating a new category 
   @Post()
   async create(@Body() body: createCategoryDto) {
     return await this.categoryService.create(body);

@@ -1,25 +1,20 @@
-import { ProductModule } from 'src/product/product.module';
 import {
   ConflictException,
   ForbiddenException,
-  forwardRef,
-  Inject,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Category } from 'src/schema/category.schema';
-import { createCategoryDto } from './dto/category.dto';
-import { ProductService } from 'src/product/product.service';
 import { Product } from 'src/schema/product.schema';
+import { createCategoryDto } from './dto/category.dto';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectModel(Category.name) private categoryModel: Model<Category>,
-    @InjectModel(Product.name) private ProductModule: Model<Product>,
-    private readonly productService: ProductService,
+    @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
   async getAll() {
@@ -112,7 +107,7 @@ export class CategoryService {
   async deleteCategory(id: string) {
     try {
       // testing if there is some products in this category(we can not delete a category if that has some products in it)
-      const products = await this.ProductModule.find({
+      const products = await this.productModel.find({
         category: id,
       });
 

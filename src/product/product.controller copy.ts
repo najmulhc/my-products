@@ -16,7 +16,6 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Serialize } from 'src/interceptors/serialise.interceptor';
 import { getProductDto } from './dto/get-product.dto';
 import { paramsDto } from 'src/category/dto/category.dto';
-import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('product')
 export class ProductController {
@@ -29,14 +28,6 @@ export class ProductController {
 
   @UseInterceptors(new Serialize(getProductDto))
   @Get()
-  @ApiQuery({
-    name: 'category',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'search',
-    required: false,
-  })
   findAll(
     @Query('category') category: string,
     @Query('search') search: string,
@@ -51,11 +42,8 @@ export class ProductController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') param: paramsDto,
-    @Body() updateProductDto: UpdateProductDto,
-  ) {
-    return this.productService.update(param.id, updateProductDto);
+  update(@Param('id') param: paramsDto, @Body() updateProductDto: UpdateProductDto) {
+    return this.productService.update(param.id , updateProductDto);
   }
 
   @Delete(':id')

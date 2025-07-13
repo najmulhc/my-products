@@ -1,16 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://najmulhudachowdhury:RrkeVcen5Olx9yhR@product-cluster.5amvvrx.mongodb.net/my-products?retryWrites=true&w=majority&appName=Product-cluster',
-      {},
-    ),
+    ConfigModule.forRoot({}),
+    MongooseModule.forRoot(process.env.MONGO_URI as string, {}),
     CategoryModule,
     ProductModule,
   ],
