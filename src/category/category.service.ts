@@ -1,22 +1,25 @@
-import mongoose, { ObjectId } from 'mongoose';
-import { Category } from 'src/schema/category.schema';
+import { ProductModule } from 'src/product/product.module';
 import {
-  BadRequestException,
   ConflictException,
-  HttpException,
+  ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Category } from 'src/schema/category.schema';
 import { createCategoryDto } from './dto/category.dto';
-import { trycatch } from 'src/utils/trycatch';
+import { ProductService } from 'src/product/product.service';
+import { Product } from 'src/schema/product.schema';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectModel(Category.name) private categoryModel: Model<Category>,
+    @InjectModel(Product.name) private ProductModule: Model<Product>,
+    private readonly productService: ProductService,
   ) {}
 
   async getAll() {
@@ -41,7 +44,7 @@ export class CategoryService {
         throw new NotFoundException('No category found with the given ID.');
       }
 
-      return { category };
+      return category;
     } catch (error) {
       throw error;
     }
@@ -108,7 +111,20 @@ export class CategoryService {
   // for deleting categories
   async deleteCategory(id: string) {
     try {
-      // TODO: first we need to find if there is any product associated with this category, if so we will return an error that you can not delete any category that is associated with one or multiple products
+      // testing if there is some products in this category(we can not delete a category if that has some products in it)
+      const products = await this.ProductModule.find({
+        category: id,
+      });
+
+      if (products[0]) {
+        throw new ForbiddenException(
+          'We have some products in this category, you might want to delete them first.',
+        );
+      }
+      const category = await this.categoryModel.findById(id)
+      if (!category) {
+        throw new NotFoundException("There is no category with this given id.")
+      }
       return await this.categoryModel.findByIdAndDelete(id);
     } catch (error) {
       throw error;

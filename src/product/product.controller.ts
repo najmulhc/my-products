@@ -15,6 +15,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Serialize } from 'src/interceptors/serialise.interceptor';
 import { getProductDto } from './dto/get-product.dto';
+import { paramsDto } from 'src/category/dto/category.dto';
 
 @Controller('product')
 export class ProductController {
@@ -34,18 +35,19 @@ export class ProductController {
     return this.productService.findAll(category, search);
   }
 
+  @UseInterceptors(new Serialize(getProductDto))
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  findOne(@Param('id') param: paramsDto) {
+    return this.productService.findOne(param.id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+  update(@Param('id') param: paramsDto, @Body() updateProductDto: UpdateProductDto) {
+    return this.productService.update(param.id , updateProductDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  remove(@Param('id') param: paramsDto) {
+    return this.productService.remove(param.id);
   }
 }
