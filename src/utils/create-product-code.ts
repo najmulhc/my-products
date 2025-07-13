@@ -1,45 +1,50 @@
-import * as crypto from 'crypto'
+import * as crypto from 'crypto';
 export const createProductCode = (productName) => {
-
   // get the first 8 char hash function
   const hash = makeHash(productName);
   // join both code and the hash
-  const code = makeId(productName)
+  const code = makeId(productName);
   // return the generated product code
-  return  hash+"-"+code;
+  return hash + '-' + code;
 };
 
-const makeHash = string => {
-  return crypto.createHash("sha256").update(string).digest("hex").slice(0, 8);
-}
+// simple 8 char hash making
+const makeHash = (string) => {
+  return crypto.createHash('sha256').update(string).digest('hex').slice(0, 8);
+};
 
-const makeId = string => {
-  let char = [''];
-  string = string.toLowerCase().replaceAll(' ', '');
+const makeId = (text) => {
+  let subStrings = ['']; // we will store the substrings here
+  let finalText = text.toLowerCase().replace(/ /g, ''); // we will match the chars using the characters of each
 
-  let temp = '';
-  for (let i = 0; i < string.length; i++) {
-    if (temp == '' || string[i] > string[i - 1]) {
-      temp += string[i];
+  let temp = ''; // temp var of text matching
+
+  for (let i = 0; i < finalText.length; i++) {
+    if (i === 0) {
+      temp = finalText[i];
     } else {
-      if (temp.length > char[0].length) {
-        char = [temp];
-      } else if (temp.length == char[0].length) {
-        char.push(temp);
-      } else if (temp.length < char[0].length) {
-        temp = '';
+      if (finalText[i] > finalText[i - 1]) {
+        temp += finalText[i];
+      } else {
+        temp = finalText[i];
       }
-      temp = string[i];
+
+      if (temp.length > subStrings[0].length) {
+        subStrings = [temp];
+      } else if (temp.length == subStrings[0].length) {
+        subStrings.push(temp);
+      }
     }
   }
 
-  const  lastElem = char[char.length-1]
-  const positions = {
-    first: string.indexOf(char[0][0]),
-    last: string.indexOf(
-      lastElem[lastElem.length -1],
-    ),
-  };
+  // getting the index of the first character
+  const firstChar = finalText.indexOf(subStrings[0]);
 
-  return positions.first.toString() + char.join('') + positions.last.toString();
-}
+  // getting the index of the last character
+  const lastChar =
+    finalText.indexOf(subStrings[subStrings.length - 1]) +
+    subStrings[0].length -
+    1;
+
+  return firstChar + subStrings.join('') + lastChar;
+};

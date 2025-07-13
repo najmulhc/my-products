@@ -50,12 +50,12 @@ export class Product implements Iproduct {
   })
   discount!: number;
 
-  // @Prop({
-  //   required: true,
-  //   type: mongoose.Types.ObjectId,
-  //   ref: 'Category',
-  // })
-  // category!: Category;
+  @Prop({
+    required: true,
+    type: mongoose.Types.ObjectId,
+    ref: 'Category',
+  })
+  category!: Category;
 
   @Prop({
     type: String,
@@ -93,4 +93,3 @@ productSchema.pre('save', function (next) {
   next();
 });
 
- 

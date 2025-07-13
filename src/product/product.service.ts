@@ -1,4 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { CategoryService } from './../category/category.service';
+import {
+  BadRequestException,
+  ConflictException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { createProductCode } from 'src/utils/create-product-code';
@@ -10,22 +17,37 @@ import { Model } from 'mongoose';
 export class ProductService {
   constructor(
     @InjectModel(Product.name) private readonly productModel: Model<Product>,
+    private readonly categoryService: CategoryService,
   ) {}
 
   // first to create a new product
   async create(createProductDto: CreateProductDto) {
     try {
-      const newProduct = new this.productModel({ ...createProductDto, productCode: "dg"});
+      const category = await this.categoryService.getByName(
+        createProductDto.category,
+      );
+      if (!category[0]) {
+        throw new NotFoundException(
+          'No valid categories are there based on given one',
+        );
+      }
+      const newProduct = new this.productModel({
+        ...createProductDto,
+        productCode: createProductCode(createProductDto.name),
+        category: category[0]._id,
+      });
       return await newProduct.save();
-    } catch (error) {
-      console.log(error)
-      throw error;
+    } catch (error: any) {
+      if (error?.code === 11000) {
+        // we are validating if there is any duplicate data in our db
+        throw new ConflictException(error.message);
+      }
+      throw new BadRequestException(error.message);
     }
   }
 
   findAll() {
-
-    return this.productModel.find()
+    return this.productModel.find().populate("category");
   }
 
   findOne(id: number) {

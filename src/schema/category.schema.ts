@@ -14,15 +14,12 @@ export class Category implements Icategory {
   })
   name!: string;
 
-
   @Prop({
     required: false,
-    unique: false
+    unique: false,
   })
   description!: string;
-
- 
 }
 
 export const categorySchema = SchemaFactory.createForClass(Category);
-categorySchema.index({index : 1}, {unique: true})
+categorySchema.index({ index: 1 }, { unique: true });

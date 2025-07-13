@@ -17,7 +17,7 @@ export class ProductController {
   @UseInterceptors(new Serialize(getProductDto))
   @Get()
   findAll() {
-    return this.productService.findAll();
+    return this.productService.findAll().populate("category");
   }
 
   @Get(':id')

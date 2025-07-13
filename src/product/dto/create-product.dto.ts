@@ -14,6 +14,10 @@ export class CreateProductDto {
   @IsString()
   description!: string;
 
+
+  @IsString()
+  category!: string;
+
   @IsNumber()
   @IsPositive()
   price!: number;
