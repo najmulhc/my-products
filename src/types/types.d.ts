@@ -9,6 +9,8 @@ export interface Iproduct {
   productCode: string;
   discount: number;
   stock: number;
+
+  discountedPrice?: number; 
   // category: Icategory;
 }
 

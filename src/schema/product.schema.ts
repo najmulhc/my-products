@@ -13,7 +13,6 @@ export class Product implements Iproduct {
   @Prop({
     required: true,
     type: String,
-
   })
   name!: string;
 
@@ -33,7 +32,6 @@ export class Product implements Iproduct {
   @Prop({
     required: true,
     type: String,
-
   })
   description!: string;
 
@@ -41,7 +39,7 @@ export class Product implements Iproduct {
     required: true,
     type: String,
     enum: ['In Stock', 'Stock Out'],
-    default: 'In Stock'
+    default: 'In Stock',
   })
   status!: 'In Stock' | 'Stock Out';
 
@@ -63,7 +61,6 @@ export class Product implements Iproduct {
     type: String,
     required: true,
     unique: true,
-
   })
   productCode!: string;
 
@@ -72,6 +69,11 @@ export class Product implements Iproduct {
     min: 0,
   })
   stock!: number;
+
+  @Prop({
+    required: false,
+  })
+  discountedPrice!: number;
 }
 
 export const productSchema = SchemaFactory.createForClass(Product);
@@ -91,3 +93,4 @@ productSchema.pre('save', function (next) {
   next();
 });
 
+ 

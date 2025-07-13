@@ -17,9 +17,11 @@ export class Category implements Icategory {
 
   @Prop({
     required: false,
-    unique: false 
+    unique: false
   })
   description!: string;
+
+ 
 }
 
 export const categorySchema = SchemaFactory.createForClass(Category);

@@ -24,7 +24,8 @@ export class ProductService {
   }
 
   findAll() {
-    return `This action returns all product`;
+
+    return this.productModel.find()
   }
 
   findOne(id: number) {
