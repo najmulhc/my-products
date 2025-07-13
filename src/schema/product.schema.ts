@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ObjectId } from 'mongoose';
 import { Iproduct } from 'src/types/types';
 import { Category } from './category.schema';
+import { createProductCode } from 'src/utils/create-product-code';
 
 export type ProductDocument = HydratedDocument<Product>;
 
@@ -12,7 +13,7 @@ export class Product implements Iproduct {
   @Prop({
     required: true,
     type: String,
-    unique: true,
+
   })
   name!: string;
 
@@ -32,7 +33,7 @@ export class Product implements Iproduct {
   @Prop({
     required: true,
     type: String,
-    unique: true,
+
   })
   description!: string;
 
@@ -40,6 +41,7 @@ export class Product implements Iproduct {
     required: true,
     type: String,
     enum: ['In Stock', 'Stock Out'],
+    default: 'In Stock'
   })
   status!: 'In Stock' | 'Stock Out';
 
@@ -50,17 +52,18 @@ export class Product implements Iproduct {
   })
   discount!: number;
 
-  @Prop({
-    required: true,
-    type: mongoose.Types.ObjectId,
-    ref: 'Category',
-  })
-  category!: Category;
+  // @Prop({
+  //   required: true,
+  //   type: mongoose.Types.ObjectId,
+  //   ref: 'Category',
+  // })
+  // category!: Category;
 
   @Prop({
     type: String,
     required: true,
     unique: true,
+
   })
   productCode!: string;
 
@@ -72,8 +75,15 @@ export class Product implements Iproduct {
 }
 
 export const productSchema = SchemaFactory.createForClass(Product);
-productSchema.index({
-  index: 1
-}, {
-  unique: true
-})
+productSchema.index(
+  {
+    index: 1,
+  },
+
+);
+
+productSchema.pre('save', function (next) {
+  this.productCode = createProductCode(this.name);
+  this.stock == 0 ? this.status = "Stock Out" : this.status = "In Stock"
+  next();
+});

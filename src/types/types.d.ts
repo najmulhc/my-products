@@ -5,11 +5,11 @@ export interface Iproduct {
   description: string;
   image?: string;
   price: number;
-  status: 'In Stock' | 'Stock Out';
+  // status: 'In Stock' | 'Stock Out';
   productCode: string;
   discount: number;
   stock: number;
-  category: Icategory;
+  // category: Icategory;
 }
 
 export interface Icategory {
