@@ -20,7 +20,7 @@ export class CategoryController {
   }
 
   @Get(':id')
-  async getById(@Param() param: paramsDto) {
+  async getById(@Param() param : paramsDto) {
     const { id } = param;
     return this.categoryService.getById(id as string);
   }

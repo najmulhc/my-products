@@ -83,7 +83,11 @@ productSchema.index(
 );
 
 productSchema.pre('save', function (next) {
+  // we are creating the unique product code of the product based on the given instruction
   this.productCode = createProductCode(this.name);
-  this.stock == 0 ? this.status = "Stock Out" : this.status = "In Stock"
+
+  // the product status may vary based on the state of the stock(if it is zero or not)
+  this.stock  <= 0 ? this.status = "Stock Out" : this.status = "In Stock"
   next();
 });
+

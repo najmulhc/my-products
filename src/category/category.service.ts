@@ -47,6 +47,23 @@ export class CategoryService {
     }
   }
 
+  async getByName(name: string) {
+    try {
+      const categories = await this.categoryModel.find({
+        name: {
+          $regex: name,
+          $options: 'i',
+        },
+      });
+      if (!categories) {
+        throw new NotFoundException('No categories found in the given string');
+      }
+      return categories;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // for handling POST request of the categories
   async create(category: createCategoryDto) {
     try {
@@ -54,7 +71,8 @@ export class CategoryService {
       const existingCategory = await this.categoryModel.findOne({
         name,
       });
-      if (existingCategory?.name) { // if we have an allready existing category with the same name
+      if (existingCategory?.name) {
+        // if we have an allready existing category with the same name
         throw new ConflictException('We allready have this category');
       }
       const item = new this.categoryModel(category);
