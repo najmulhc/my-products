@@ -6,5 +6,5 @@ export interface Iproduct {
 
 export interface Icategory {
   name: string,
-  id: ObjectId
+   
 }
