@@ -144,6 +144,6 @@ Swagger documentation is enabled and auto-generated. You can test every endpoint
 
 ## Author
 
-Najmul Huda Chowdhury t
+Najmul Huda Chowdhury 
 
 Check out my other work at [GitHub](https://github.com/najmulhc)
