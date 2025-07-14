@@ -2,7 +2,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -116,9 +116,9 @@ export class CategoryService {
           'We have some products in this category, you might want to delete them first.',
         );
       }
-      const category = await this.categoryModel.findById(id)
+      const category = await this.categoryModel.findById(id);
       if (!category) {
-        throw new NotFoundException("There is no category with this given id.")
+        throw new NotFoundException('There is no category with this given id.');
       }
       return await this.categoryModel.findByIdAndDelete(id);
     } catch (error) {

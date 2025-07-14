@@ -1,22 +1,22 @@
-import { CategoryService } from './../category/category.service';
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseInterceptors,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
+import { Serialize } from 'src/interceptors/serialise.interceptor';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Serialize } from 'src/interceptors/serialise.interceptor';
-import { getProductDto } from './dto/get-product.dto';
-import { paramsDto } from 'src/category/dto/category.dto';
+import { ProductService } from './product.service';
+
 import { ApiQuery } from '@nestjs/swagger';
+import { paramsDto } from 'src/category/dto/category.dto';
+import { getProductDto } from './dto/get-product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -46,20 +46,20 @@ export class ProductController {
 
   @UseInterceptors(new Serialize(getProductDto))
   @Get(':id')
-  findOne(@Param('id') param: paramsDto) {
-    return this.productService.findOne(param.id);
+  async findOne(@Param() param: paramsDto) {
+    return await this.productService.findOne(param.id);
   }
 
   @Patch(':id')
   update(
-    @Param('id') param: paramsDto,
+    @Param() param: paramsDto,
     @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.productService.update(param.id, updateProductDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') param: paramsDto) {
+  delete(@Param() param: paramsDto) {
     return this.productService.delete(param.id);
   }
 }
