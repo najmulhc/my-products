@@ -57,7 +57,7 @@ export class ProductController {
   ) {
     return this.productService.update(param.id, updateProductDto);
   }
-
+  // delete api
   @Delete(':id')
   delete(@Param() param: paramsDto) {
     return this.productService.delete(param.id);
